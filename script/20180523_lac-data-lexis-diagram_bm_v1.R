@@ -221,3 +221,36 @@ background +
 
 ggsave(filename = here("figures", "07-period_age.png"), plot = period_age, type = "cairo",
        height = 7.5, width = 10, device = NULL)
+
+
+
+# plot for article --------------------------------------------------------
+background_two <- 
+df %>% 
+  ggplot(aes(x = Year, y = Age)) +
+  coord_fixed(ratio = 1, xlim = c(1990, 2016), ylim = c(0, 20)) +
+  geom_rect(xmin = 1985, xmax = 2008, ymin = -2, ymax = 22, alpha = 0.1, fill = "grey90") +
+  geom_rect(xmin = 2015.5, xmax = 2018, ymin = -2, ymax = 22, alpha = 0.1, fill = "grey90") +
+  geom_abline(data = lines, aes(intercept = intercept, slope = slope), colour = "grey50", size = 0.5) +
+  geom_hline(yintercept = seq(0, 18, 5), colour = "grey50", size = 0.5) +
+  geom_vline(xintercept = seq(1990, 2016, 5), colour = "grey50", size = 0.5) +
+  theme_bw()
+
+for_article <- 
+  background_two +
+  geom_point(data = points, aes(x = pointx, y = pointy), size = 5, shape = 1) +
+  geom_point(data = points, aes(x = segx, y = segy), size = 3) +
+  geom_point(data = points, aes(x = segxend, y = segyend), size = 3) +
+  geom_point(data = points2, aes(x = insegxend, y = insegyend), size = 3, shape = 15) +
+  geom_point(data = points2, aes(x = insegx, y = insegy), size = 3, shape = 15) +
+  geom_segment(data = points2, aes(x = insegx, y = insegy, 
+                                   xend = insegxend, yend = insegyend,
+                                   linetype = omitted), size = 1.1) +
+  geom_segment(data = points, aes(x = segx, y = segy, 
+                                  xend = segxend, yend = segyend), linetype = 2, alpha = 0.8,
+               size = 1.1) +
+  theme_bw() +
+  theme(legend.position="none")
+
+ggsave(filename = here("figures", "11-background_article.png"), plot = background_two, type = "cairo",
+       height = 7.5, width = 10, device = NULL)
